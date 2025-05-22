@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { parsePDF } from '../../lib/utils/parsePDF';
 import { groqClient } from '../../lib/utils/groqClient';
+import { processData } from '../../lib/utils/processParsedData'
 import { insertDataToSupabase } from '../../lib/utils/supabase/supabaseClient';
 
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '10mb', // Ajuste conforme necessário
+      sizeLimit: '10mb',
     },
   },
 };
@@ -38,37 +39,25 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(arrayBuffer);
 
     // Extrair texto do PDF
-    const extractedText = await parsePDF(buffer);
+    const parsedData = await parsePDF(buffer);
     
     // Verificar se o texto foi extraído
-    if (!extractedText || extractedText.trim().length === 0) {
+    if (!parsedData.transacoes.length && !parsedData.header.length) {
       return NextResponse.json(
-        { error: 'Não foi possível extrair texto do PDF' },
+        { error: 'Nenhum dado estruturado encontrado no PDF' },
         { status: 400 }
       );
     }
 
     // Processar com a Groq AI
-    const aiResponse = await groqClient.generateResponse(extractedText);
-
-    const jsonString = aiResponse.replace(/```/g, '').trim();
-
-    let dados;
-    try {
-
-      dados = JSON.parse(jsonString);
-  
-    } catch (error) {
-  
-      console.error("Erro ao fazer o parse do JSON:", error);
-  
-    }
-    console.log(dados);
-    
+    const extractedText = JSON.stringify(parsedData);
+    const dadosProcessado = await processData(extractedText)
+    //const aiResponse = await groqClient.generateResponse(extractedText);
+    console.log(dadosProcessado);
     
     // Chamar a função para inserir os dados no Supabase
 
-    const insertResult = await insertDataToSupabase(dados);
+    const insertResult = await insertDataToSupabase(dadosProcessado);
 
     if (insertResult.error) {
       return NextResponse.json(

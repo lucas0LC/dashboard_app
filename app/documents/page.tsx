@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { createClient } from '../lib/utils/supabase/client';
 import PdfUploader from "../components/PdfUp";
+import { sortDatePeriods } from '../lib/utils/SortDate';
 
 interface Report {
   report_period: string;
@@ -26,7 +27,10 @@ export default function DocumentsPage() {
             .eq('user_id', user.id);
 
           if (error) throw new Error(error.message);
-          setReports(data || []);
+
+          // Padrão: recente primeiro 'desc', adicionar o parametro 'asc' para mais antigo primeiro
+          const sortedReports = sortDatePeriods(data || []); 
+          setReports(sortedReports);
         } else {
           throw new Error('Usuário não autenticado');
         }

@@ -2,7 +2,8 @@ import { signInAction } from "../../actions";
 import Link from "next/link";
 
 interface SearchParams {
-  error?: string;
+  error?: string,
+  success?: string
 }
 
 interface LoginProps {
@@ -55,11 +56,11 @@ export default async function Login({ searchParams }: LoginProps) {
                 name="remember"
               />
               <label className="text-gray-700" htmlFor="remember">
-                Remember me
+                Lembrar
               </label>
             </div>
             <Link className="text-blue-500 hover:underline" href="/forgot-password">
-              Forgot password?
+              Esqueceu a senha?
             </Link>
           </div>
           <button
@@ -68,17 +69,22 @@ export default async function Login({ searchParams }: LoginProps) {
           >
             Login
           </button>
-          {/* Exibe a mensagem de erro, se houver */}
+          {/* Exibe a mensagem de erro ou success, se houver */}
           {resolvedSearchParams.error && (
             <div className="mt-4 text-center text-red-500">
               {resolvedSearchParams.error}
             </div>
           )}
+          {resolvedSearchParams.success && (
+            <div className="mt-4 text-center text-gray-500">
+              {resolvedSearchParams.success}
+            </div>
+          )}
         </form>
         <div className="flex items-center justify-center mt-6">
-          <span className="text-gray-700">Don't have an account?</span>
+          <span className="text-gray-700">Não tem uma conta?</span>
           <Link className="text-blue-500 hover:underline ml-2" href="/sign-up">
-            Sign up
+            Cadastrar
           </Link>
         </div>
       </div>

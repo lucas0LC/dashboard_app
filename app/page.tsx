@@ -1,30 +1,35 @@
-import MetricsCard from './components/MetricsCard';
-import ReportCard from './components/ReportCard';
-import AgeStatisticsChart from './components/AgeStatisticsChart';
-import PricingTable from './components/PricingTable';
+"use client";
+import React, { useState } from 'react';
+import ReportsCards from './components/ReportsCards';
+import ReportInsights from './components/ReportInsights';
+import ReportTable from './components/ReportTable';
+import GraphPie from './components/GraphPie';
 
 export default function Home() {
-  const reportMetrics = [
-    { label: "Refund amount", value: "50%", percent: "+20%" },
-    { label: "Refund of interest", value: "25%", percent: "+20%" },
-    { label: "Main debt", value: "85%", percent: "+10%" },
-    { label: "Return of fines", value: "60%", percent: "+70%" },
-  ];
+  const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
+
+  // carrega e define o primeiro report como padrão
+  const handleReportsLoaded = (reports: { id: number }[]) => {
+    if (reports.length > 0 && !selectedReportId) {
+      setSelectedReportId(reports[0].id);
+    }
+  };
 
   return (
-    <div className="flex-1 min-h-screen p-8">
-      <main className="flex-1 grid grid-cols-4 gap-4">
-        <MetricsCard title="Revenue" value="$405,091.00" percentage="+4.75%" />
-        <MetricsCard title="Overdue invoices" value="$12,787.00" percentage="+54.02%" />
-        <MetricsCard title="Outstanding invoices" value="$245,988.00" percentage="-1.39%" />
-        <MetricsCard title="Expenses" value="$30,156.00" percentage="+10.18%" />
-      </main>
-      <div className="mt-8 flex-1 grid grid-cols-2 gap-10 h-56">
-        <ReportCard title="Final report" metrics={reportMetrics} />
-        <AgeStatisticsChart />
+    <div className="inline-flex p-4 h-screen">
+      <div className='inline-flex flex-col w-full'>
+        {selectedReportId && (
+          <div className="mt-6">
+            <ReportsCards reportId={selectedReportId} />
+          </div>
+        )}
+        <div className="mt-14 flex-1">
+          <ReportInsights reportId={selectedReportId} />
+        </div>
       </div>
-      <div className="mt-8">
-        <PricingTable />
+      <div className="ml-6 mt-6">
+        <ReportTable onSelectReport={setSelectedReportId} onReportsLoaded={handleReportsLoaded} />
+        <GraphPie reportId={selectedReportId} ></GraphPie>
       </div>
     </div>
   );

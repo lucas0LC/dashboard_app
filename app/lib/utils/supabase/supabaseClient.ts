@@ -1,14 +1,7 @@
 import { createClient } from './server';
+import { StructuredData } from '../../../dataInterfaces'
 
-// Defina os tipos para os dados que você espera inserir
-interface Transaction {
-  date: string; // formato "dd/mm/yyyy"
-  time: string; // formato "HH:MM" ou "HH:MM:SS"
-  type: string;
-  amount: number;
-}
-
-interface Dados {
+/*interface Dados {
   report_period: string;
   value: number;
   dynamic_price: number;
@@ -16,11 +9,15 @@ interface Dados {
   final_earnings: number;
   transactions: Transaction[];
 }
+  */
 
-
-// Função para converter data de "dd/mm/yyyy" para "yyyy-mm-dd"
+// Função para converter data de "DD/MM/YYYY" para "YYYY-MM-DD"
 function convertDateFormat(dateStr: string): string {
-  const [day, month, year] = dateStr.split('/');
+  const parts = dateStr.split('/');
+  if (parts.length !== 3) {
+    throw new Error(`Formato de data inválido: ${dateStr}`);
+  }
+  const [day, month, year] = parts;
   return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 }
 
@@ -33,17 +30,17 @@ function formatTime(timeStr: string): string {
   return timeStr;
 }
 
-export async function insertDataToSupabase(dados: Dados) {
+export async function insertDataToSupabase(dados: StructuredData) {
   const { report_period, value, dynamic_price, promotion, final_earnings, transactions } = dados;
 
   const supabase = await createClient();
-  const { data: { user }} = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
   // 1. Inserir dados na tabela 'reports'
   const { data: reportData, error: reportError } = await supabase
     .from('reports')
     .insert([{ user_id: user?.id, report_period, value, dynamic_price, promotion, final_earnings }])
-    .select(); // .select() para retornar os dados inseridos (incluindo o id)
+    .select(); // retorna os dados inseridos (incluindo o id)
 
   if (reportError) {
     console.error('Erro ao inserir report:', reportError);
@@ -59,16 +56,27 @@ export async function insertDataToSupabase(dados: Dados) {
   // Recupera o id do report inserido
   const reportId = reportData[0].id;
 
-  // 2. Preparar os dados das transações, associando o report_id e convertendo os formatos de data e hora
-  const transactionsToInsert = transactions.map((tx) => ({
-    report_id: reportId,
-    transaction_date: convertDateFormat(tx.date), // "yyyy-mm-dd"
-    transaction_time: formatTime(tx.time),          // "HH:MM:SS"
-    type: tx.type,
-    amount: tx.amount,
-  }));
+  // 2. Preparar os dados das transações, convertendo formatos e dividindo datetime_start
+  const transactionsToInsert = transactions.map((tx) => {
+    // Converte a data da transação
+    const transaction_date = tx.date ? convertDateFormat(tx.date) : null;
+    const [dateStartPart, timeStartPart] = tx.datetime_start? tx.datetime_start.split(' '): "";
+    const date_start = convertDateFormat(dateStartPart);
+    const time_start = formatTime(timeStartPart);
+    const time_end = formatTime(tx.time_end);
+    
+    return {
+      report_id: reportId,
+      transaction_date,
+      date_start,
+      time_start,
+      time_end,
+      type: tx.type,
+      amount: tx.amount,
+    };
+  });
 
-  // Inserir os dados na tabela 'transactions'
+  // 3. Inserir os dados na tabela 'transactions'
   const { data: transactionsData, error: transactionsError } = await supabase
     .from('transactions')
     .insert(transactionsToInsert);

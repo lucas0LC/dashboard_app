@@ -1,44 +1,58 @@
-import { forgotPasswordAction } from "../../actions";
+import { resetPasswordAction } from "../actions";
 import Link from "next/link";
-import { SmtpMessage } from "../smtp-message";
 
 // Defina o tipo Message conforme sua necessidade
 export type Message = {
   error?: string;
-  success?: string;
+  message?: string;
 };
 
-export default async function ForgotPassword(props: {
+export default async function ResetPassword(props: {
   searchParams: Promise<Message>;
 }) {
-  // Aguarda os parâmetros da query (por exemplo, error ou success)
+  // Aguarda os parâmetros da query (por exemplo, error ou message)
   const searchParams = await props.searchParams;
 
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Esqueceu a senha</h1>
+          <h1 className="text-2xl font-bold text-gray-800">Redefinir senha</h1>
           <p className="text-gray-600">
-            Digite seu e-mail para redefinir sua senha
+            Digite sua nova senha abaixo
           </p>
         </div>
-        {/* O atributo "action" aponta para a server action que tratará o envio */}
-        <form action={forgotPasswordAction} method="POST">
+        <form action={resetPasswordAction} method="POST">
           <div className="mb-4">
             <label
               className="block text-gray-700 font-medium mb-2"
-              htmlFor="email"
+              htmlFor="password"
             >
-              Email
+              Nova senha
             </label>
             <input
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              id="email"
-              name="email"
-              placeholder="nome@email.com"
+              id="password"
+              name="password"
+              placeholder="Digite a senha nova"
               required
-              type="email"
+              type="password"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 font-medium mb-2"
+              htmlFor="confirmPassword"
+            >
+              Confirme a senha
+            </label>
+            <input
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              id="confirmPassword"
+              name="confirmPassword"
+              placeholder="Digite a senha nova"
+              required
+              type="password"
             />
           </div>
           <div className="mb-6">
@@ -55,16 +69,10 @@ export default async function ForgotPassword(props: {
               {searchParams.error}
             </div>
           )}
-          {/* Exibe mensagem de sucesso, se houver */}
-          {searchParams.success && (
-            <div className="mb-4 text-center text-green-500">
-              {searchParams.success}
-            </div>
-          )}
         </form>
         <div className="text-center">
           <Link className="text-blue-500 hover:underline" href="/sign-in">
-            Voltar para Login
+            Voltar para login
           </Link>
         </div>
       </div>

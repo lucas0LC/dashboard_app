@@ -20,19 +20,20 @@ export const groqClient = {
             "value": x,
             "dynamic_price": x,
             "promotion": x,
-            "final_earnings": x,
+            "final_earnings": x, << Ganhos total
             "transactions": [
-              {"date": "XXXX/XX/XX", "time": "Hora da transação", "type": "UberX", "amount": valor},
+              {"date": "XXXX/XX/XX", "time_end": "HH:MM","datetime_start": "XXXX/XX/XX HH:MM", "type": "UberX", "amount": valor},
               ...
             ]
           }
+          
+          ATENÇÃO: Em "horas_trabalhadas" para cada dia, identifique o começo do tempo da primeira e o fim do tempo da última transação daquele dia e calcule o intervalo entre elas.
 
-          ATENÇÃO: quando for estruturar o "time" olhe sempre para a coluna "PROCESSADO" do texto, e não use dias da semana no "Date" e novamente evite transações DUPLICADAS.
-          Ignore todas transações do type: 'Transferido para a conta bancária'
+          ATENÇÃO: não use dias da semana no "Date" e Atenção nos formato de "time" xxxx = HH:MM
 
           Sua única resposta deve ser o JSON formatado corretamente e totalmente preciso. Qualquer saída fora desse formato será considerada incorreta.`
         }],
-        model: 'llama-3.3-70b-versatile'
+        model: 'deepseek-r1-distill-llama-70b'
       });
 
       return response.choices[0]?.message?.content || 'Sem resposta';

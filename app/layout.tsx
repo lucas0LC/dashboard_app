@@ -26,12 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Navbar/>
         <div className="flex">
-          <Navbar/>
-          <div className="mt-[57px]">
+          <div className="inline-flex">
             <Sidebar />
           </div>
-          <main className="flex-1 pl-64 pt-[57px]">{children}</main>
+          <main className="container mx-auto inline-flex">{children}</main>
         </div>
       </body>
     </html>
