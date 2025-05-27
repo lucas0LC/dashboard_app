@@ -1,15 +1,6 @@
 import { createClient } from './server';
 import { StructuredData } from '../../../dataInterfaces'
 
-/*interface Dados {
-  report_period: string;
-  value: number;
-  dynamic_price: number;
-  promotion: number;
-  final_earnings: number;
-  transactions: Transaction[];
-}
-  */
 
 // Função para converter data de "DD/MM/YYYY" para "YYYY-MM-DD"
 function convertDateFormat(dateStr: string): string {

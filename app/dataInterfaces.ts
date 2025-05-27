@@ -44,3 +44,18 @@ export interface StructuredData {
   final_earnings: number;
   transactions: TransactionData[];
 }
+
+export interface ApiKeyResponseData {
+  apiKey?: string;
+  keyName?: string;
+  keyHint?: string;
+  message?: string;
+  error?: string;
+}
+
+export interface ExistingApiKeyInfo {
+  keyName: string | null;
+  keyHint: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+}

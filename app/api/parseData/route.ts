@@ -49,14 +49,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // Processar com a Groq AI
     const extractedText = JSON.stringify(parsedData);
     const dadosProcessado = await processData(extractedText)
-    //const aiResponse = await groqClient.generateResponse(extractedText);
     console.log(dadosProcessado);
     
     // Chamar a função para inserir os dados no Supabase
-
     const insertResult = await insertDataToSupabase(dadosProcessado);
 
     if (insertResult.error) {
