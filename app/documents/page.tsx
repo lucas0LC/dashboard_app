@@ -49,7 +49,7 @@ export default function DocumentsPage() {
   
 
   return (
-    <div className="flex-1 min-h-screen p-8">
+    <div className="flex-1 h-[calc(100vh-4rem)] p-8">
       <h1 className="text-2xl font-bold mb-4">Upload PDF Relatorio</h1>
       <PdfUploader />
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

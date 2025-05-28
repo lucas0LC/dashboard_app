@@ -25,13 +25,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-900`}>
         <Navbar/>
-        <div className="flex">
-          <div className="inline-flex">
+        <div className="flex h-[calc(100vh-4rem)]">
+          <div className="inline-flex h-full">
             <Sidebar />
           </div>
-          <main className="container mx-auto inline-flex">{children}</main>
+          <main className="container mx-auto inline-flex justify-center bg-gray-900 h-[calc(100vh-4rem)]">{children}</main>
         </div>
       </body>
     </html>

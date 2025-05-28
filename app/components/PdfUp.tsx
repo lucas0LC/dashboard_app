@@ -32,7 +32,7 @@ export default function PdfUploader() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("/api/groq", {
+      const response = await fetch("/api/parseData", {
         method: "POST",
         body: formData,
       });

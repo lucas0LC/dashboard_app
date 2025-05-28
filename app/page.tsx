@@ -16,7 +16,7 @@ export default function Home() {
   };
 
   return (
-    <div className="inline-flex p-4 h-screen">
+    <div className="inline-flex p-4 h-[calc(100vh-4rem)]">
       <div className='inline-flex flex-col w-full'>
         {selectedReportId && (
           <div className="mt-6">

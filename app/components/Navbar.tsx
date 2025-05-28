@@ -2,7 +2,7 @@ import AuthButton  from "./auth/UserAction";
 
 export default function Navbar(){
     return(
-        <nav className="w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+        <nav className="sticky top-0 z-30 h-16 w-full items-center justify-between bg-white px-4 shadow-md dark:bg-gray-800">
             <div className="px-3 py-3 lg:px-5 lg:pl-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center justify-start rtl:justify-end">

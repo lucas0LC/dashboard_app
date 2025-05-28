@@ -14,3 +14,8 @@ export function encodedRedirect(
 ) {
   return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
 }
+
+export const formatDate = (date: Date, options?: Intl.DateTimeFormatOptions): string => {
+  const defaultOptions: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+  return date.toLocaleDateString('pt-BR', options || defaultOptions);
+};
