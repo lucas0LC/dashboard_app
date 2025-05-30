@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
   try {
     requestBody = await req.json();
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json({ error: 'Corpo da requisição inválido: não é JSON válido.' }, { status: 400 });
   }
 

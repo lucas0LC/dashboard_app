@@ -34,14 +34,18 @@ export default function ReportsCards({ reportId }: ReportsCardsProps) {
           setReport( data )
         }
 
-      } catch (error: any) {
-        console.error("Erro ao buscar os dados:", error.message);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error("Erro ao buscar os dados:", error.message);
+        } else {
+          console.error("Erro desconhecido ao buscar os dados:", error);
+        }
       } finally {
         setLoading(false);
       }
     }
     fetchReport();
-  }, [reportId]);
+  }, [reportId, supabase]);
 
   if (loading) {
     return <div>Carregando...</div>;

@@ -115,7 +115,7 @@ function processHeader(rawHeader: RawHeader[]): ReportData {
   }
 
   // Se a data final não tiver ano, aplica a lógica de virada de ano
-  let startYear = startComponents.year;
+  const startYear = startComponents.year;
   let endYear = endComponents.year;
   if (!endYear) {
     if (parseInt(endComponents.month, 10) < parseInt(startComponents.month, 10)) {
@@ -197,8 +197,10 @@ export const processData = async (jsonStr: string): Promise<StructuredData> => {
     };
 
     return structuredData;
-  } catch (error: any) {
-    console.error("Erro no processamento:", error.message);
+  } catch (error: unknown) {
+    if(error instanceof Error){
+      console.error("Erro no processamento:", error.message);
+    };
     throw error;
   }
 };

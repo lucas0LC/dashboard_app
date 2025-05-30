@@ -3,7 +3,15 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { createClient } from '../lib/utils/supabase/client';
 import { adjustTransactionDate } from '../lib/utils/Insights';
 import { ReportFilterSidebar } from './components/relatorioFilterSidebar';
-import { ReportMonth } from './components/relatorioTable';
+import dynamic from 'next/dynamic';
+const DynamicReportMonth = dynamic(
+  () => import('./components/relatorioTable'),
+  {
+    ssr: false,
+    loading: () => <p>Carregando relatório do mês...</p>
+  }
+);
+//import { ReportMonth } from './components/relatorioTable';
 
 export interface TransactionForReport {
   id?: string | number;
@@ -84,7 +92,7 @@ export default function RelatoriosPage() {
     };
 
     fetchAndProcessInitialData();
-  }, [supabase]);
+  }, [supabase, selectedYear]);
 
 
   const transactionsForDetailedView = useMemo(() => {
@@ -130,7 +138,7 @@ export default function RelatoriosPage() {
             className="lg:sticky lg:top-20 flex-shrink-0" 
           />
           <main className="flex-1">
-            <ReportMonth
+            <DynamicReportMonth
               displayMonth={selectedMonth} 
               displayYear={selectedYear}
               transactionsForDailySummary={transactionsForDetailedView}

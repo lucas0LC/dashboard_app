@@ -30,8 +30,12 @@ interface ReportMonthProps {
   allTransactionsInSelectedYear: ProcessedTransaction[];
 }
 
+const monthNames = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+ ];
 
-export const ReportMonth: React.FC<ReportMonthProps> = ({
+const ReportMonth: React.FC<ReportMonthProps> = ({
   displayMonth,
   displayYear,
   transactionsForDailySummary,
@@ -42,10 +46,6 @@ export const ReportMonth: React.FC<ReportMonthProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const monthNames = [
-    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-  ];
 
   useEffect(() => {
     if (transactionsForDailySummary.length > 0) {
@@ -110,7 +110,7 @@ export const ReportMonth: React.FC<ReportMonthProps> = ({
     const yValues: number[] = Array.from({ length: 12 }, (_, i) => monthlyTotalsForYear.get(i) || 0);
     
     return { plotlyXLabels: xLabels, plotlyYValues: yValues };
-  }, [allTransactionsInSelectedYear, displayYear, monthNames]);
+  }, [allTransactionsInSelectedYear, displayYear]);
 
 
   const formatDate = (date: Date, options?: Intl.DateTimeFormatOptions): string => {
@@ -145,7 +145,7 @@ export const ReportMonth: React.FC<ReportMonthProps> = ({
         {dailySummaries.length > 0 ? (
           <div className="overflow-auto max-h-[60vh] shadow-md rounded-lg">
             <table className="min-w-full divide-y divide-gray-700">
-              <thead className="bg-gray-750 sticky top-0 z-10">
+              <thead className="bg-gray-700 sticky top-0 z-10">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Data</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Tipos</th>
@@ -159,7 +159,7 @@ export const ReportMonth: React.FC<ReportMonthProps> = ({
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">{formatDate(summary.fullDate, { day: '2-digit', month: '2-digit' })}</td>
                     <td className="px-4 py-3 text-sm text-gray-400">{summary.types.join(', ')}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">R$ {summary.totalValue.toFixed(2)}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-400 text-center">{summary.count}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-400">{summary.count}</td>
                   </tr>
                 ))}
               </tbody>
@@ -168,17 +168,17 @@ export const ReportMonth: React.FC<ReportMonthProps> = ({
                 <button
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                 Anterior
                 </button>
-                <span className="text-gray-600 dark:text-gray-300">
+                <span className="text-gray-400 dark:text-gray-300">
                 Página {currentPage} de {totalPages || 1}
                 </span>
                 <button
                 onClick={() => setCurrentPage(prev => prev + 1)}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                 Próximo
                 </button>
@@ -199,6 +199,7 @@ export const ReportMonth: React.FC<ReportMonthProps> = ({
                         y: plotlyYValues, 
                         type: 'bar', 
                         marker: { color: 'rgb(79, 70, 229)' },
+                        hovertemplate: "%{x}<br>Total: R$ %{y:,.2f}<extra></extra>"
                     },]}
                     layout={{
                         xaxis: { 
@@ -238,3 +239,4 @@ export const ReportMonth: React.FC<ReportMonthProps> = ({
     </div>
   );
 };
+export default ReportMonth;

@@ -51,7 +51,7 @@ export function getDayName(day: number): string {
  * Se a data/hora final for "menor" que a inicial, assume que a jornada passou da meia-noite e adiciona 24h.
  */
 export function computeDuration(startDate: string, startTime: string, endDate: string, endTime: string): number {
-    let startDT = adjustTransactionDate(startDate, startTime);
+    const startDT = adjustTransactionDate(startDate, startTime);
     let endDT = adjustTransactionDate(endDate, endTime);
     // Se a data final ajustada for menor que a inicial, significa que o fim ocorreu após a meia-noite (dentro do mesmo dia de trabalho)
     if (endDT < startDT) {

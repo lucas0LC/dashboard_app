@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import React from 'react';
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from './components/Sidebar';
@@ -31,7 +32,7 @@ export default function RootLayout({
           <div className="inline-flex h-full">
             <Sidebar />
           </div>
-          <main className="container mx-auto inline-flex justify-center bg-gray-900 h-[calc(100vh-4rem)]">{children}</main>
+          <main className="inline-flex overflow-y-auto w-screen justify-center bg-gray-900 h-[calc(100vh-4rem)]">{children}</main>
         </div>
       </body>
     </html>

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { parsePDF } from '../../lib/utils/parsePDF';
-import { groqClient } from '../../lib/utils/groqClient';
 import { processData } from '../../lib/utils/processParsedData'
 import { insertDataToSupabase } from '../../lib/utils/supabase/supabaseClient';
 
@@ -14,7 +13,6 @@ export const config = {
 
 export async function POST(request: Request) {
   try {
-    // Extrair os dados do formulário enviado
     const formData = await request.formData();
     const fileField = formData.get('file');
 
@@ -51,12 +49,14 @@ export async function POST(request: Request) {
 
     const extractedText = JSON.stringify(parsedData);
     const dadosProcessado = await processData(extractedText)
-    console.log(dadosProcessado);
     
     // Chamar a função para inserir os dados no Supabase
     const insertResult = await insertDataToSupabase(dadosProcessado);
 
     if (insertResult.error) {
+      if (insertResult.error.code === 'DUPLICATE_REPORT_PERIOD') {
+        return NextResponse.json({ error: insertResult.error.message }, { status: 409 });
+      }
       return NextResponse.json(
 
         { error: 'Erro ao inserir dados no banco' },

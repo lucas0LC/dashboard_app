@@ -2,20 +2,20 @@
 import React, { useEffect, useState } from 'react';
 import { createClient } from '../lib/utils/supabase/client';
 import { getAdjustedDay, getDayName, computeDuration } from '../lib/utils/Insights';
-import Plotly from 'plotly.js-basic-dist-min';
+import Plotly, { type Data } from 'plotly.js-basic-dist-min';
 import createPlotlyComponent from "react-plotly.js/factory";
 const Plot = createPlotlyComponent(Plotly);
 
 interface Transaction {
-  transaction_date: string; // Data de fim da corrida
-  date_start: string;       // Data de início da corrida
+  transaction_date: string;
+  date_start: string;
   time_start: string;
   time_end: string;
   amount: number;
 }
 
 interface ReportInsightsProps {
-  reportId: number;
+  reportId: number | null;
 }
 
 export default function ReportInsights({ reportId }: ReportInsightsProps) {
@@ -40,7 +40,7 @@ export default function ReportInsights({ reportId }: ReportInsightsProps) {
     };
 
     if (reportId) fetchTransactions();
-  }, [reportId]);
+  }, [reportId, supabase]);
 
   if (loading) return <p>Carregando insights...</p>;
   if (transactions.length === 0) return <p>Nenhuma transação encontrada.</p>;
@@ -76,17 +76,19 @@ export default function ReportInsights({ reportId }: ReportInsightsProps) {
   const weekDataForGraph = week.map(day => {
     if (weekMap.has(day)) {
       const trans = weekMap.get(day);
-      const totalTrans = trans.reduce((total, valor) => total + valor.amount, 0);
-      return { x: getDayName(day), y: totalTrans };
+      if(trans){
+        const totalTrans = trans.reduce((total, valor) => total + valor.amount, 0);
+        return { x: getDayName(day), y: totalTrans };
+      } else{ return { x: getDayName(day), y: null }; };
     } else {
       return { x: getDayName(day), y: null };
     }
   });
-  console.log(weekDataForGraph);
-  const data = [{
+  const data: Data[] = [{
     x: weekDataForGraph.map(grap => grap.x),
     y: weekDataForGraph.map(grap => grap.y),
     type: 'bar',
+    marker: { color: 'rgb(79, 70, 229)' },
     hovertemplate: "%{x}<br>Total: R$ %{y:,.2f}<extra></extra>"
   }];
 
@@ -96,12 +98,17 @@ export default function ReportInsights({ reportId }: ReportInsightsProps) {
     plot_bgcolor: 'rgba(0,0,0,0)',
     font: { color: 'white' },
     xaxis: {
-      type: 'category',
-      fixedrange: true
+      type: 'category' as const,
+      fixedrange: true,
+      tickfont: { color: '#9ca3af' }, 
+      gridcolor: 'rgba(55, 65, 81, 0.5)',
+      automargin: true
     },
-    dragmode: false,
     yaxis: {
       fixedrange: true,
+      tickfont: { color: '#9ca3af' }, 
+      gridcolor: 'rgba(55, 65, 81, 0.5)',
+      automargin: true,
       tickprefix: 'R$',
       tickformat: ",.2f"
     }

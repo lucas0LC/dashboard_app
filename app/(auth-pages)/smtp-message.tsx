@@ -7,7 +7,7 @@ export function SmtpMessage() {
       <InfoIcon size={16} className="mt-0.5" />
       <div className="flex flex-col gap-2">
         <small className="text-sm text-secondary-foreground">
-          <strong> Note:</strong> I'm pretty S2
+          <strong> Note:</strong> Ireineu
         </small>
         <div>
           <Link

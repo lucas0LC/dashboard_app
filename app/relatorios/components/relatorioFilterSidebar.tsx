@@ -74,7 +74,7 @@ export  const ReportFilterSidebar: React.FC<ReportFilterSidebarProps> = ({
                     ? 'bg-indigo-600 text-white font-semibold shadow-md' 
                     : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'
                   }`}
-                aria-current={selectedMonth === index ? 'month' : undefined}
+                aria-current={index === selectedMonth ? "true" : undefined}
               >
                 {name}
               </button>

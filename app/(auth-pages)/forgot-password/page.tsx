@@ -1,6 +1,5 @@
 import { forgotPasswordAction } from "../../actions";
 import Link from "next/link";
-import { SmtpMessage } from "../smtp-message";
 
 // Defina o tipo Message conforme sua necessidade
 export type Message = {

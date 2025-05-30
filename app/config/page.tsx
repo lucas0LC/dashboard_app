@@ -24,9 +24,11 @@ export default function ConfigPage() {
       } else {
         setCurrentKeyInfo(null);
       }
-    } catch (err: any) {
-      setFetchError(err.message);
-      setCurrentKeyInfo(null);
+    } catch (err: unknown) {
+      if( err instanceof Error){
+        setFetchError(err.message);
+        setCurrentKeyInfo(null);
+      }
     } finally {
       setIsLoadingInfo(false);
     }
@@ -59,7 +61,7 @@ export default function ConfigPage() {
       <div className="container mx-auto px-4 max-w-3xl">
         <header className="mb-10">
           <h1 className="text-3xl font-bold text-center text-gray-800 dark:text-gray-100">
-            Minha Chave API
+            Em desenvolvimento
           </h1>
         </header>
         

@@ -29,9 +29,6 @@ export async function createClient() {
 }
 
 export async function createAdminClient() {
-  // Para o service role, os cookies são menos relevantes para a sessão do cliente
-  // mas o createServerClient do @supabase/ssr ainda espera a interface.
-  // Eles podem ser no-op se o cliente de serviço não estiver gerenciando cookies de sessão de usuário.
   const cookieStore = await cookies();
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

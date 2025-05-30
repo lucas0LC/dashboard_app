@@ -54,15 +54,17 @@ export const ApiKeyGenerator: React.FC<ApiKeyGeneratorProps> = ({ onKeyGenerated
         });
       }
       setKeyNameInput('');
-    } catch (err: any) {
-      console.error("Erro ao gerar chave de API:", err);
+    } catch (err: unknown) {
+      if (err instanceof Error){
+        console.error("Erro ao gerar chave de API:", err);
+        setError(err.message || 'Ocorreu um erro inesperado.');
+      }
       if (httpResponse) {
         console.error("Detalhes da Resposta da API:", {
           status: httpResponse.status,
           statusText: httpResponse.statusText,
         });
       }
-      setError(err.message || 'Ocorreu um erro inesperado.');
     } finally {
       setIsLoading(false);
     }
@@ -99,7 +101,7 @@ export const ApiKeyGenerator: React.FC<ApiKeyGeneratorProps> = ({ onKeyGenerated
         </div>
         <button type="submit" disabled={isLoading}
           className={`w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center 
-                      ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600'}`}>
+                      ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-blue-300 dark:bg-indigo-500 dark:hover:bg-indigo-600'}`}>
           {isLoading ? 'Processando...' : 'Gerar / Substituir Chave'}
         </button>
       </form>

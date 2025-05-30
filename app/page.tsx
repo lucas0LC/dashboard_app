@@ -1,9 +1,24 @@
 "use client";
 import React, { useState } from 'react';
 import ReportsCards from './components/ReportsCards';
-import ReportInsights from './components/ReportInsights';
 import ReportTable from './components/ReportTable';
-import GraphPie from './components/GraphPie';
+
+import dynamic from 'next/dynamic';
+const DynamicGraphPie = dynamic(
+  () => import('./components/GraphPie'),
+  {
+    ssr: false,
+    loading: () => <p>Carregando gráfico Pie...</p>
+  }
+);
+
+const DynamicInsights = dynamic(
+  () => import('./components/ReportInsights'),
+  {
+    ssr: false,
+    loading: () => <p>Carregando estatisticas...</p>
+  }
+);
 
 export default function Home() {
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
@@ -24,12 +39,12 @@ export default function Home() {
           </div>
         )}
         <div className="mt-14 flex-1">
-          <ReportInsights reportId={selectedReportId} />
+          <DynamicInsights reportId={selectedReportId} />
         </div>
       </div>
       <div className="ml-6 mt-6">
         <ReportTable onSelectReport={setSelectedReportId} onReportsLoaded={handleReportsLoaded} />
-        <GraphPie reportId={selectedReportId} ></GraphPie>
+        <DynamicGraphPie reportId={selectedReportId} ></DynamicGraphPie>
       </div>
     </div>
   );

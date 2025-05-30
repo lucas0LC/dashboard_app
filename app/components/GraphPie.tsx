@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { createClient } from '../lib/utils/supabase/client';
-import Plotly from 'plotly.js-basic-dist-min';
+import Plotly, { type Data } from 'plotly.js-basic-dist-min';
 import createPlotlyComponent from "react-plotly.js/factory";
 const Plot = createPlotlyComponent(Plotly);
 
@@ -12,7 +12,7 @@ interface Report {
 }
 
 interface GraphPieIdReport {
-    reportId: number;
+    reportId: number | null;
 }
 
 export default function GraphPie({ reportId }: GraphPieIdReport) {
@@ -37,14 +37,18 @@ export default function GraphPie({ reportId }: GraphPieIdReport) {
           setReport( data )
         }
 
-      } catch (error: any) {
-        console.error("Erro ao buscar os dados:", error.message);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error("Erro ao buscar os dados:", error.message);
+        } else {
+          console.error("Erro desconhecido ao buscar os dados:", error);
+        }
       } finally {
         setLoading(false);
       }
     }
     fetchReport();
-  }, [reportId]);
+  }, [reportId, supabase]);
 
   if (loading) {
     return <div>Carregando...</div>;
@@ -56,10 +60,10 @@ export default function GraphPie({ reportId }: GraphPieIdReport) {
 
   const ValueAjust = report.value - report.dynamic_price
 
-  const data = [{
+  const data: Data[] = [{
     values: [ValueAjust, report.dynamic_price, report.promotion],
     labels: ['Valor', 'Dinâmica', 'Promoção'],
-    type: 'pie',
+    type: 'pie' as const,
     textinfo: "label+percent",
     textposition: "outside"
   }];

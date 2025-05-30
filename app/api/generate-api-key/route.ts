@@ -1,6 +1,6 @@
 "use server";
 import { NextResponse } from 'next/server';
-import { createClient } from '../../lib/utils/supabase/server';
+import { createAdminClient } from '../../lib/utils/supabase/server';
 import { generateNewApiKey, hashApiKey } from '../../lib/utils/APIKey';
 
 interface SuccessResponseData {
@@ -15,7 +15,7 @@ interface ErrorResponseData {
 }
 
 export async function POST(req: Request): Promise<NextResponse<SuccessResponseData | ErrorResponseData>> {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   const { data: { user }, error: userError } = await supabase.auth.getUser();
 
   if (userError || !user) {
@@ -28,8 +28,8 @@ export async function POST(req: Request): Promise<NextResponse<SuccessResponseDa
 
   try {
     const body = await req.json();
-    keyNameInput = body.keyName?.trim() || `Chave API Padrão`; // Nome padrão
-  } catch (e: any) {
+    keyNameInput = body.keyName?.trim() || `Chave API Padrão`;
+  } catch (e: unknown) {
     return NextResponse.json({ error: 'Corpo da requisição inválido ou ausente.' }, { status: 400 });
   }
 
