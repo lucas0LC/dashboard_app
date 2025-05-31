@@ -16,6 +16,8 @@ interface reqBody {
     estado?: string;
     cep?: string;
   };
+  ganho_km?: number;
+  ganho_horas?: number;
   [key: string]: any; 
 }
 
@@ -26,6 +28,8 @@ interface tripData {
   categoria?: string | null;
   valor_corrida?: number | null;
   nota_passageiro?: number | null;
+  ganho_km?: number | null;
+  ganho_horas?: number | null;
   endereco_destino?: object | null;
 }
 
@@ -38,8 +42,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Corpo da requisição inválido: não é JSON válido.' }, { status: 400 });
   }
 
-  const { apiKey, Geo, categoria, valor_corrida, nota_passageiro, endereco_destino } = requestBody;
-
+  const { apiKey, Geo, categoria, valor_corrida, nota_passageiro, ganho_km, ganho_horas,endereco_destino } = requestBody;
+  
   if (!apiKey) {
     return NextResponse.json({ error: 'apiKey é obrigatória.' }, { status: 400 });
   }
@@ -72,6 +76,8 @@ export async function POST(req: Request) {
     valor_corrida: typeof valor_corrida === 'number' ? valor_corrida : null,
     nota_passageiro: typeof nota_passageiro === 'number' ? nota_passageiro : null,
     endereco_destino: endereco_destino || null, // Armazena o objeto inteiro ou null
+    ganho_km: typeof ganho_km ==='number' ? ganho_km : null,
+    ganho_horas: typeof ganho_horas ==='number' ? ganho_horas : null,
   };
 
   const { data: insertedData, error: insertError } = await supabaseAdmin
