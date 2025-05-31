@@ -49,17 +49,16 @@ export async function POST(req: Request) {
   const hashedReceivedApiKey = hashApiKey(apiKey);
 
   const { data: apiKeyData, error: apiKeyError } = await supabaseAdmin
-    .from('api_keys')
-    .select('user_id') // Seleciona o user_id associado à chave
-    .eq('key_hash', hashedReceivedApiKey) // Compara os hash
-    .single();
+    .rpc('validate_api_key', {
+      received_key_hash: hashedReceivedApiKey
+    });
 
-  if (apiKeyError || !apiKeyData) {
+  if (apiKeyError || apiKeyData[0].is_valid == false) {
     console.error('Erro ao validar API key ou chave não encontrada:', apiKeyError?.message);
     return NextResponse.json({ error: 'apiKey inválida ou não encontrada.' }, { status: 401 });
   }
 
-  const userId = apiKeyData.user_id;
+  const userId = apiKeyData[0].associated_user_id;
 
   if (!Geo || typeof Geo.latitude !== 'number' || typeof Geo.longitude !== 'number') {
     return NextResponse.json({ error: 'Dados de GeoLocalização (latitude, longitude) são obrigatórios e devem ser números.' }, { status: 400 });
