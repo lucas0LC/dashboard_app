@@ -155,3 +155,14 @@ export const signOutAction = async () => {
   await supabase.auth.signOut();
   return redirect("/sign-in");
 };
+
+export async function signInAnonymously() {
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInAnonymously();
+
+  if (error) {
+    console.error('Erro no login anônimo:', error);
+  } else {
+    return redirect("/")
+  }
+}

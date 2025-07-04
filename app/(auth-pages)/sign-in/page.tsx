@@ -1,5 +1,6 @@
 import { signInAction } from "../../actions";
 import Link from "next/link";
+import { SmtpMessage } from '../smtp-message';
 
 interface SearchParams {
   error?: string,
@@ -87,6 +88,7 @@ export default async function Login({ searchParams }: LoginProps) {
             Cadastrar
           </Link>
         </div>
+        <SmtpMessage/>
       </div>
     </div>
   );

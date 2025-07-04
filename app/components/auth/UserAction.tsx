@@ -10,7 +10,7 @@ export default async function AuthButton() {
   
   return user ? (
     <div className="flex items-center gap-4 text-white">
-      {user.email}!
+      {user.is_anonymous? 'Convidado': user.email}
       <form action={signOutAction}>
         <button>
           Sair
